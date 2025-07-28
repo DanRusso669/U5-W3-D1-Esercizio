@@ -16,6 +16,8 @@ public record NewEmployeeDTO(
         String surname,
         @NotBlank(message = "Email is mandatory.")
         @Email(message = "Email format not valid.")
-        String email
+        String email,
+        @NotBlank
+        String password
 ) {
 }

@@ -18,7 +18,7 @@ public class AuthenticatorService {
     public String checkCredentialsAndCreateToken(LoginDTO payload) {
 
         Employee found = this.employeeService.findyByEmail(payload.email());
-        if (found.getName().equals(payload.password())) {
+        if (found.getPassword().equals(payload.password())) {
             return jwtTools.createToken(found);
         } else {
             throw new UnauthorizedException("Wrong email or password.");

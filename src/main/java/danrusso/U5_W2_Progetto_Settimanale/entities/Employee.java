@@ -15,16 +15,18 @@ public class Employee {
     private String surname;
     @Column(unique = true)
     private String email;
+    private String password;
     private String avatar;
 
     public Employee() {
     }
 
-    public Employee(String username, String name, String surname, String email) {
+    public Employee(String username, String name, String surname, String email, String password) {
         this.username = username;
         this.name = name;
         this.surname = surname;
         this.email = email;
+        this.password = password;
     }
 
     public UUID getEmployeeId() {
@@ -69,6 +71,14 @@ public class Employee {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

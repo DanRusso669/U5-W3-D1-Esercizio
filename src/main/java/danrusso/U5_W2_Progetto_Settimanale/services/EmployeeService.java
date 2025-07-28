@@ -37,7 +37,7 @@ public class EmployeeService {
             throw new BadRequestEmailException(payload.email());
         });
 
-        Employee newEmployee = new Employee(payload.username(), payload.name(), payload.surname(), payload.email());
+        Employee newEmployee = new Employee(payload.username(), payload.name(), payload.surname(), payload.email(), payload.password());
         newEmployee.setAvatar("https://ui-avatars.com/api/?name=" + payload.name() + "+" + payload.surname());
 
         Employee savedEmployee = this.employeeRepository.save(newEmployee);
