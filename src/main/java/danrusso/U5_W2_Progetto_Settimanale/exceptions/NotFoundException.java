@@ -8,4 +8,8 @@ public class NotFoundException extends RuntimeException {
                 type + " with id " + id + " not found."
         );
     }
+
+    public NotFoundException(String message) {
+        super(message);
+    }
 }

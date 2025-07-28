@@ -85,4 +85,8 @@ public class EmployeeService {
             throw new BadRequestEmailException("Something went wrong while saving the image.");
         }
     }
+
+    public Employee findyByEmail(String email) {
+        return this.employeeRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("Email not found."));
+    }
 }
