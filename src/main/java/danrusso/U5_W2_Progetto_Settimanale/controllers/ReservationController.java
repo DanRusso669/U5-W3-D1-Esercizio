@@ -1,14 +1,17 @@
 package danrusso.U5_W2_Progetto_Settimanale.controllers;
 
+import danrusso.U5_W2_Progetto_Settimanale.entities.Employee;
 import danrusso.U5_W2_Progetto_Settimanale.entities.Reservation;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.ValidationException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewReservationDTO;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NewUserReservationDTO;
 import danrusso.U5_W2_Progetto_Settimanale.services.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -31,15 +34,16 @@ public class ReservationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Reservation createJourney(@RequestBody @Validated NewReservationDTO payload, BindingResult validationResults) {
+    public Reservation createJourney(@RequestBody @Validated NewUserReservationDTO payload, BindingResult validationResults, @AuthenticationPrincipal Employee currentAuthEmployee) {
         if (validationResults.hasErrors()) {
             throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
         }
 
-        return this.reservationService.saveReservation(payload);
+        return this.reservationService.saveReservation(payload, currentAuthEmployee);
     }
 
     @PutMapping("/{reservationId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Reservation findByIdAndUpdate(@PathVariable UUID reservationId, @RequestBody @Validated NewReservationDTO payload, BindingResult validationResults) {
         if (validationResults.hasErrors()) {
             throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
@@ -48,12 +52,14 @@ public class ReservationController {
     }
 
     @GetMapping("/{reservationId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Reservation findById(@PathVariable UUID reservationId) {
         return this.reservationService.findById(reservationId);
     }
 
     @DeleteMapping("/{reservationId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void findByIdAndDelete(@PathVariable UUID reservationId) {
         this.reservationService.findByIdAndDelete(reservationId);
     }

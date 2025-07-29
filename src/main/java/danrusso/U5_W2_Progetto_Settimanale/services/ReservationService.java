@@ -8,6 +8,7 @@ import danrusso.U5_W2_Progetto_Settimanale.exceptions.BadRequestException;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.NotFoundException;
 import danrusso.U5_W2_Progetto_Settimanale.exceptions.ToManyReservationsException;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.NewReservationDTO;
+import danrusso.U5_W2_Progetto_Settimanale.payloads.NewUserReservationDTO;
 import danrusso.U5_W2_Progetto_Settimanale.repositories.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -37,15 +38,14 @@ public class ReservationService {
         return this.reservationRepository.findAll(pageable);
     }
 
-    public Reservation saveReservation(NewReservationDTO payload) {
-        Employee foundEmp = this.employeeService.findById(payload.employeeId());
+    public Reservation saveReservation(NewUserReservationDTO payload, Employee currentEmployee) {
         Journey foundJou = this.journeyService.findById(payload.journeyId());
         if (foundJou.getStatus().equals(JourneyType.COMPLETED))
             throw new BadRequestException("You cannot book a completed trip.");
-        List<Reservation> foundList = this.reservationRepository.filterByEmployee(foundEmp.getEmployeeId(), foundJou.getDate());
+        List<Reservation> foundList = this.reservationRepository.filterByEmployee(currentEmployee.getEmployeeId(), foundJou.getDate());
         if (!foundList.isEmpty()) throw new ToManyReservationsException("You already have a booking for that date.");
 
-        Reservation newReser = new Reservation(foundJou, foundEmp, LocalDate.now(), payload.notes());
+        Reservation newReser = new Reservation(foundJou, currentEmployee, LocalDate.now(), payload.notes());
 
         Reservation savedReser = this.reservationRepository.save(newReser);
         System.out.println("Reservation with id " + savedReser.getReservationId() + " saved successfully.");
