@@ -3,6 +3,7 @@ package danrusso.U5_W2_Progetto_Settimanale.exceptions;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.ErrorsDTO;
 import danrusso.U5_W2_Progetto_Settimanale.payloads.ErrorsPayloadListDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,12 @@ public class ExceptionsHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorsDTO handleBadRequestEmailException(ToManyReservationsException ex) {
         return new ErrorsDTO(ex.getMessage(), LocalDateTime.now());
+    }
+
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorsDTO handleBadRequestEmailException(AuthorizationDeniedException ex) {
+        return new ErrorsDTO("Access Denied", LocalDateTime.now());
     }
 
     @ExceptionHandler(UnauthorizedException.class)

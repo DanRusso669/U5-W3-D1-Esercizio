@@ -1,12 +1,19 @@
 package danrusso.U5_W2_Progetto_Settimanale.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "employees")
-public class Employee {
+@JsonIgnoreProperties({"password", "authorities", "enabled", "accountNonExpired", "credentialsNonExpired", "accountNonLocked"})
+public class Employee implements UserDetails {
     @Id
     @GeneratedValue
     private UUID employeeId;
@@ -17,6 +24,8 @@ public class Employee {
     private String email;
     private String password;
     private String avatar;
+    @Enumerated(EnumType.STRING)
+    private Roles role;
 
     public Employee() {
     }
@@ -27,6 +36,7 @@ public class Employee {
         this.surname = surname;
         this.email = email;
         this.password = password;
+        this.role = Roles.USER;
     }
 
     public UUID getEmployeeId() {
@@ -79,6 +89,19 @@ public class Employee {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Roles getRole() {
+        return role;
+    }
+
+    public void setRole(Roles role) {
+        this.role = role;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.role.name()));
     }
 
     @Override

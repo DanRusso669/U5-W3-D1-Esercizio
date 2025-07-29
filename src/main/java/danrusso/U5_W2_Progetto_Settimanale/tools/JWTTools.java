@@ -28,4 +28,8 @@ public class JWTTools {
             throw new UnauthorizedException("Something's wrong with token. Try to log again.");
         }
     }
+
+    public String obtainIdFromToken(String token) {
+        return Jwts.parser().verifyWith(Keys.hmacShaKeyFor(secret.getBytes())).build().parseSignedClaims(token).getPayload().getSubject();
+    }
 }

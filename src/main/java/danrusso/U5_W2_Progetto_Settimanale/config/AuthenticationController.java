@@ -25,4 +25,14 @@ public class AuthenticationController {
         return new LoginRespDTO(token);
     }
 
+//    @PostMapping("/signup")
+//    @ResponseStatus(HttpStatus.CREATED)
+//    @PreAuthorize("hasAuthority('ADMIN')")
+//    public Employee createEmployee(@RequestBody @Validated NewEmployeeDTO payload, BindingResult validationResults) {
+//        if (validationResults.hasErrors()) {
+//            throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
+//        }
+//        return this.employeeService.saveEmployee(payload);
+//    }
+
 }

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class JourneyController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Journey createJourney(@RequestBody @Validated NewJourneyDTO payload, BindingResult validationResults) {
         if (validationResults.hasErrors()) {
             throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
@@ -44,6 +46,7 @@ public class JourneyController {
     }
 
     @PutMapping("/{journeyId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Journey findByIdAndUpdate(@PathVariable UUID journeyId, @RequestBody @Validated NewJourneyDTO payload, BindingResult validationResults) {
         if (validationResults.hasErrors()) {
             throw new ValidationException(validationResults.getFieldErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage).toList());
@@ -53,11 +56,13 @@ public class JourneyController {
 
     @DeleteMapping("/{journeyId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void findByIdAndDelete(@PathVariable UUID journeyId) {
         this.journeyService.findByIdAndDelete(journeyId);
     }
 
     @PatchMapping("/{journeyId}/status")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Journey findByIdAndChangeStatus(@PathVariable UUID journeyId, @RequestBody @Validated NewStatusDTO newStatus, BindingResult validationResults) {
         if (validationResults.hasErrors()) {
             throw new ValidationException(validationResults.getFieldErrors().stream().map(fieldError -> fieldError.getDefaultMessage()).toList());
